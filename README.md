@@ -18,3 +18,9 @@ The interface is in russian, because the tool was designed for russian music ser
 Script is written to work in synergy with AIMP, thus you require it. (I was using 3.x.x version, should work fine with any other version)
 
 I will document the code in a while, although most of the inspiration and api requests were taken from https://github.com/MarshalX/yandex-music-api (huge thanks)
+
+
+
+Thats how the main menu looks (Great design choices, thank you)
+
+![image](https://user-images.githubusercontent.com/29946764/178170947-ab1cde69-30cd-4bc8-8b0c-fc2caae05f99.png)
