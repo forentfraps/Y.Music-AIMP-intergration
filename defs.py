@@ -217,7 +217,7 @@ class YM:
     def bulk_download(self, trackIdList, dir):
         self.progress_type = "Downloading"
         
-        pool = Pool(8)
+        pool = Pool(cpu_count())
         pool.starmap(self.download, zip(trackIdList, repeat(dir)))
         pool.close()
         pool.join()
