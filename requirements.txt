@@ -1,0 +1,7 @@
+browser_cookie3==0.16.1
+fake_headers==1.0.2
+psutil==5.9.1
+pywin32==302
+pywinauto==0.6.8
+requests==2.27.1
+xmltodict==0.13.0
