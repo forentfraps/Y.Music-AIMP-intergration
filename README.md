@@ -4,8 +4,9 @@
 ## External addon for AIMP to work with Yandex Music
 
 
-### Logging in (aka getting the token)
-  - Open your browser and type in the link : ```https://oauth.yandex.ru/authorize?response_type=token&client_id=23cabbbdc6cd418abb4b39c32c41195d```
+### Setting things up
+  - run ```pip install -r requirement.txt``` in directory with this repo
+  - Open your browser and type in the link: ```https://oauth.yandex.ru/authorize?response_type=token&client_id=23cabbbdc6cd418abb4b39c32c41195d```
   - Authorize
   - That is it, my script will steal cookies from your browser (only yandex.ru domain), hence keep your browser up, when launching 1st time
 
