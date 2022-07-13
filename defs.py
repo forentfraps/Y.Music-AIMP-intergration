@@ -20,7 +20,7 @@ import shutil
 
 
 class YM:
-    def __init__(self):
+    def __init__(self, debug = False):
         self.s = requests.Session()
         self.browser = None
         self.progress = 0
@@ -28,17 +28,8 @@ class YM:
         self.check_ex_files() 
         self.token = self.get_token()
         self.uid = self._get_uid()
-        today = datetime.datetime.now().strftime("%d")
-        with open("./Y/daily_ups.txt","r") as f:
-            day = f.read()
-        if day != today:
-            print('Downloading daily tracks')
+        if not debug:
             self.thr_bulk_download_daily()
-            with open("./Y/daily_ups.txt","w") as f:
-                f.write(today)
-            
-        if len(listdir('./Y/likes')) == 0:
-            print('downloading users tracks, that happens only once :-)')
             self.thr_bulk_download_like()
     def check_ex_files(self):
         """
@@ -99,6 +90,7 @@ class YM:
         if exists("./Y/token.txt"):
             with open("./Y/token.txt", 'r') as f:
                 self.token = f.read()
+            return
         self.grab_cookies()
         prompt = "https://oauth.yandex.ru/authorize?response_type=token&client_id=23cabbbdc6cd418abb4b39c32c41195d"
         resp = self.s.get(prompt, allow_redirects=True)
@@ -309,19 +301,22 @@ class YM:
         """
         tracks = self.fetch_daily_tracks()
         dir = "./Y/daily"
-
+        files = [f for f in listdir(dir) if isfile(join(dir, f))]
+        print(list(map(lambda x: int(x.split("_")[-1][:-4]) in tracks, files)).count(True))
+        print(len(tracks))
+        if not all(list(map(lambda x: int(x.split("_")[-1][:-4]) in tracks, files))):
     
-        for filename in listdir(dir):
-            file_path = os.path.join(dir, filename)
-            try:
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path)
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path)
-            except Exception as e:
-                print('Failed to delete %s. Reason: %s' % (file_path, e))
-                
-        self.bulk_download(tracks, dir)
+            for filename in listdir(dir):
+                file_path = os.path.join(dir, filename)
+                try:
+                    if os.path.isfile(file_path) or os.path.islink(file_path):
+                        os.unlink(file_path)
+                    elif os.path.isdir(file_path):
+                        shutil.rmtree(file_path)
+                except Exception as e:
+                    print('Failed to delete %s. Reason: %s' % (file_path, e))
+                    
+            self.bulk_download(tracks, dir)
         print("done")
     def thr_bulk_download_daily(self):
         """
@@ -333,19 +328,13 @@ class YM:
         """
         Downloads liked tracks
         """
-        tracks = self.fetch_like_tracks()
+        tracks =  self.fetch_like_tracks()
         dir = "./Y/likes"
         
         files = [f for f in listdir(dir) if isfile(join(dir, f))]
-        real_tracks = []
-
-        for trackId in tracks:
-
-            name, artist = self.get_track_info(trackId)
-            
-            if fr"{name}_{artist}_{trackId}.mp3" not in files:
-                real_tracks.append(trackId)
-        self.bulk_download(real_tracks, dir)
+        trackIds = list(filter(bool, [trackId if trackId not in tracks else 0 for trackId in list(map(lambda x: x.split("_")[-1][:-4], files))]))
+        self.bulk_download(trackIds, dir)
+        
         print("done")
     def thr_bulk_download_like(self):
         """
@@ -475,5 +464,5 @@ class YM:
             self._get_uid()
         action = 'remove' if remove else 'add-multiple'
         url = f'https://api.music.yandex.net/users/{self.uid}/dislikes/tracks/{action}'
-        resp = self.post(url, {'track-ids' : trackId})
+        self.post(url, {'track-ids' : trackId})
         client.next()
