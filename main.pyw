@@ -7,6 +7,9 @@ from tkinter.ttk import *
 import os
 import shutil
 import threading
+import ctypes
+
+
 def like_():
     global y, a
     id = y.get_current_id(a)
@@ -62,29 +65,55 @@ def radio():
     a.add_dirs_to_playlist(rf"{os.getcwd()}\Y\radio")
     a.next()
 if __name__ == "__main__":
+    
+    myappid = 'mycompany.myproduct.subproduct.version' # arbitrary string
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
     y = defs.YM()
     a = pyaimp.Client()
     a.set_shuffled(True)
     master = Tk()
-    master.geometry("300x380")
+    master.geometry("245x280")
     master.title("Aimp Supplement")
+    master.iconbitmap(default='logo.ico')
     
-    btn1 = Button(master, text = "Лайк", command = like_)
-    btn2 = Button(master, text = "Убрать навсегда", command = dislike_)
-    btn3 = Button(master, text = "Обновить радио", command = refresh_radio)
-    btn4 = Button(master, text = "Радио", command = radio)
-    btn45 = Button(master, text = "Дэйли", command = daily)
-    btn5 = Button(master, text = "Любимое", command = likes)
-    label=Label(master, text="Currently idling", font=('Aerial 18'))
-    progress = Progressbar(master, orient=HORIZONTAL, length=100)
-    label.pack(pady = 10)
-    progress.pack(pady = 10)
-    btn1.pack(pady = 10)
-    btn2.pack(pady = 10)
-    btn3.pack(pady = 10)
-    btn4.pack(pady = 10)
-    btn45.pack(pady = 10)
-    btn5.pack(pady = 10)
+    radio_but=Button(master)
+    radio_but["text"] = "Radio"
+    radio_but.place(x=10,y=10,width=100,height=40)
+    radio_but["command"] = radio
+    
+    daily_but=Button(master)
+    daily_but["text"] = "Daily"
+    daily_but.place(x=10,y=70,width=100,height=40)
+    daily_but["command"] = daily
+    
+    likes_but=Button(master)
+    likes_but["text"] = "Likes"
+    likes_but.place(x=10,y=130,width=100,height=40)
+    likes_but["command"] = likes
+    
+    like_but=Button(master)
+    like_but["text"] = "Like"
+    like_but.place(x=10,y=240,width=100,height=30)
+    like_but["command"] = like_
+    
+    dislike_but = Button(master)
+    dislike_but["text"] = "Dislike"
+    dislike_but.place(x=135,y=240,width=100,height=30)
+    dislike_but["command"] = dislike_
+    
+    refradio_but = Button(master)
+    refradio_but["text"] = "Refresh Radio"
+    refradio_but.place(x=135,y=10,width=100,height=40)
+    refradio_but["command"] = refresh_radio
+    
+    label=Label(master, font=11)
+    label["text"] = "Setting up stuff..."
+    label.place(x=135,y=115,width=120,height=40)
+    
+    progress=Progressbar(master, orient=HORIZONTAL, length=100)
+    progress["value"] = 0
+    progress.place(x=135,y=70,width=100,height=40)
+    
     t = threading.Thread(name='child procs', target=update_label)
     t.start()
     
