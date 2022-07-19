@@ -359,7 +359,7 @@ class YM:
         """
         Sends a feedback to music.yandex.ru, needed for a better radio track fetching
         """
-        data = {'type': type_}
+        data = {'type': type_, 'timestamp': time.time()}
         if batch_id:
             params = {'batch-id': batch_id}
 
