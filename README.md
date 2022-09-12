@@ -39,3 +39,7 @@ The bio updates once per 30 seconds.
 ![image](https://user-images.githubusercontent.com/29946764/189736916-95c81598-6c22-4fbb-bd96-2b74d51e0e81.png)
 ![image](https://user-images.githubusercontent.com/29946764/189736936-8b67f484-af34-486b-a474-06a1db70181c.png)
 
+### Note
+Dont forget to add a token in main.pyw, otherwise it will steal it from your computer and use what its found
+
+It could be from an another account, so please pass the token, when initializing Discord() class
