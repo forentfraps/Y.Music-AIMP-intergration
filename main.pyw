@@ -8,8 +8,16 @@ import os
 import shutil
 import threading
 import ctypes
+from multiprocessing import Process
+import sys
 
+def get_cur_path():
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable) + f'{os.sep}Y{os.sep}'
 
+    elif __file__:
+        return os.path.dirname(__file__) + f'{os.sep}Y{os.sep}'
+    return False
 def like_():
     global y, a
     id = y.get_current_id(a)
@@ -19,9 +27,9 @@ def dislike_():
     id = y.get_current_id(a)
     y.dislike(id, a)
 def refresh_radio():
-    global y, a
+    global y, a, PATH
     y.progress_type = "Setting up stuff"
-    folder = "./Y/radio"
+    folder = f"{PATH}radio"
     
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
@@ -34,18 +42,18 @@ def refresh_radio():
             print('Failed to delete %s. Reason: %s' % (file_path, e))
     y.thr_bulk_radio()
 def daily():
-    global y, a
-    a.add_dirs_to_playlist(rf"{os.getcwd()}\Y\daily")
+    global a
+    a.add_dirs_to_playlist(f"{PATH}daily")
     a.next()
 def update_label():
     while True:
-        
-        global y, a, label, progress
+        global label, progress, y , a
         while y.progress_type != None:
             time.sleep(1)
             label['text'] = y.progress_type
             if y.progress_type == "Fetching tracks":
                 progress['mode'] = 'determinate'
+                progress.stop()
                 progress['value'] = y.progress
             else:
                 if progress['mode'] != 'indeterminate':
@@ -64,12 +72,22 @@ def radio():
     global y, a
     a.add_dirs_to_playlist(rf"{os.getcwd()}\Y\radio")
     a.next()
-if __name__ == "__main__":
     
+def discord_status(d):
+    while True:
+        d.discord_update_DEV()
+        time.sleep(1)
+if __name__ == "__main__":
+    PATH = get_cur_path()
     myappid = 'mycompany.myproduct.subproduct.version' # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
     y = defs.YM()
     a = pyaimp.Client()
+    d = None
+    try:
+        d = defs.Discord(y = y, a = a, token = None) 
+    except Exception as e:
+        print(f"{e}, in main, while initializing discord class")
     a.set_shuffled(True)
     master = Tk()
     master.geometry("245x280")
@@ -113,9 +131,10 @@ if __name__ == "__main__":
     progress=Progressbar(master, orient=HORIZONTAL, length=100)
     progress["value"] = 0
     progress.place(x=135,y=70,width=100,height=40)
-    
-    t = threading.Thread(name='child procs', target=update_label)
-    t.start()
+    if d:
+        threading.Thread(name = 'discord status', target = discord_status, args = (d, ), daemon=True).start()
+        threading.Thread(name = 'discord bio', target = d.update_bio, daemon=True).start()
+    threading.Thread(name='update label', target=update_label, daemon=True).start()
     
     
     
