@@ -25,3 +25,17 @@ Code is well commented and documented
 Thats how the main menu looks (Great design choices, thank you)
 
 ![image](https://user-images.githubusercontent.com/29946764/178856802-10821809-54ed-4ff3-90dd-bc11ec657b6f.png)
+
+
+## Discord addon
+Now has a discord addon(aka selfbotting), which works very spotify alike.
+
+It shows in your status dynamically changing progress bar of your song and its name
+
+In the bio it provides a direct link to it. The status updates every 0.5 seconds on your side and about once per 3 seconds on everyone elses client.
+
+The bio updates once per 30 seconds.
+
+![image](https://user-images.githubusercontent.com/29946764/189736916-95c81598-6c22-4fbb-bd96-2b74d51e0e81.png)
+![image](https://user-images.githubusercontent.com/29946764/189736936-8b67f484-af34-486b-a474-06a1db70181c.png)
+
